@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: changes/create-user-entity-table.sql
+      relativeToChangelogFile: true
+  - include:
+      file: changes/create-item-table.sql
+      relativeToChangelogFile: true
+  - include:
+      file: changes/insert-admin-into-user-entity-table.sql
+      relativeToChangelogFile: true

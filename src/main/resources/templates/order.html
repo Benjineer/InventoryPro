@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order Management UI</title>
+</head>
+<body>
+<h1>Order Management</h1>
+
+<h2>Get All Orders</h2>
+<form th:action="@{/api/v1/orders}" method="get">
+    <button type="submit">Get All Orders</button>
+</form>
+
+<h2>Get My Orders</h2>
+<form th:action="@{/api/v1/orders/me}" method="get">
+    <button type="submit">Get My Orders</button>
+</form>
+
+<h2>Get Order by ID</h2>
+<form th:action="@{/api/v1/orders/{id}}" method="get">
+    <label for="orderId">Order ID:</label>
+    <input type="text" id="orderId" name="id" required/>
+    <br/>
+    <button type="submit">Get Order</button>
+</form>
+
+<h2>Create Order</h2>
+<form th:action="@{/api/v1/orders}" method="post">
+    <label for="orderName">Order Name:</label>
+    <input type="text" id="orderName" name="orderName" required/>
+    <br/>
+    <label for="orderDescription">Order Description:</label>
+    <input type="text" id="orderDescription" name="orderDescription" required/>
+    <br/>
+    <button type="submit">Create Order</button>
+</form>
+
+<h2>Update Order Status by ID</h2>
+<form th:action="@{/api/v1/orders/{id}/status}" method="patch">
+    <label for="orderId">Order ID:</label>
+    <input type="text" id="orderId" name="id" required/>
+    <br/>
+    <label for="orderStatus">Order Status:</label>
+    <input type="text" id="orderStatus" name="status" required/>
+    <br/>
+    <button type="submit">Update Order Status</button>
+</form>
+
+<h2>Update My Order Status</h2>
+<form th:action="@{/api/v1/orders/status}" method="patch">
+    <label for="orderStatus">Order Status:</label>
+    <input type="text" id="orderStatus" name="status" required/>
+    <br/>
+    <button type="submit">Update My Order Status</button>
+</form>
+
+<h2>Delete My Order</h2>
+<form th:action="@{/api/v1/orders/{id}/me}" method="delete">
+    <label for="orderId">Order ID:</label>
+    <input type="text" id="orderId" name="id" required/>
+    <br/>
+    <button type="submit">Delete My Order</button>
+</form>
+
+<h2>Delete Order by ID</h2>
+<form th:action="@{/api/v1/orders/{id}}" method="delete">
+    <label for="orderId">Order ID:</label>
+    <input type="text" id="orderId" name="id" required/>
+    <br/>
+    <button type="submit">Delete Order</button>
+</form>
+</body>
+</html>
