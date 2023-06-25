@@ -60,7 +60,6 @@ public class UserService {
                     user.setFirstname(updatedUser.getFirstname());
                     user.setLastname(updatedUser.getLastname());
                     user.setEmail(updatedUser.getEmail());
-                    user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
                     userRepository.save(user);
                 }, () -> {
                     throw new FetchNotFoundException(User.class.getSimpleName(), username);
@@ -73,7 +72,6 @@ public class UserService {
                     user.setFirstname(updatedUser.getFirstname());
                     user.setLastname(updatedUser.getLastname());
                     user.setEmail(updatedUser.getEmail());
-                    user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
                     user.setRole(updatedUser.getRole());
                     userRepository.save(user);
                 }, () -> {

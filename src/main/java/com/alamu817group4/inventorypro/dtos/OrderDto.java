@@ -15,8 +15,14 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDto {
 
+    private Long id;
+
     private List<@Valid OrderItemDto> orderItems;
 
     @Valid
     private Address deliveryAddress;
+
+    private String paymentMethod;
+
+    private String status;
 }

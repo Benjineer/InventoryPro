@@ -7,14 +7,17 @@ import com.alamu817group4.inventorypro.entities.Item;
 import com.alamu817group4.inventorypro.entities.Order;
 import com.alamu817group4.inventorypro.entities.OrderItem;
 import com.alamu817group4.inventorypro.exceptions.InventoryProClientException;
+import com.alamu817group4.inventorypro.repositories.OrderItemRepository;
 import com.alamu817group4.inventorypro.repositories.OrderRepository;
 import com.alamu817group4.inventorypro.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.FetchNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,20 +27,46 @@ public class OrderService {
 
     private final UserRepository userRepository;
 
+    private final OrderItemRepository orderItemRepository;
+
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
 
-    public List<Order> getAllOrders(String username) {
-        return orderRepository.findAllByUserEmail(username);
+    public List<OrderDto> getAllOrders(String username) {
+        return orderRepository.findAllByUserEmail(username).stream()
+                .map(order -> OrderDto.builder()
+                        .id(order.getId())
+                        .paymentMethod(order.getPaymentMethod())
+                        .deliveryAddress(order.getDeliveryAddress())
+                        .status(order.getStatus())
+                        .orderItems(order.getOrderItems().stream().map(orderItem -> OrderItemDto.builder()
+                                .itemId(orderItem.getItem().getId())
+                                .quantity(orderItem.getQuantity())
+                                .name(orderItem.getItem().getName())
+                                .description(orderItem.getItem().getDescription())
+                                .build()).collect(Collectors.toList()))
+                        .build()).collect(Collectors.toList());
     }
 
-    public Order getOrderById(Long id) {
+    public OrderDto getOrderById(Long id) {
         return orderRepository.findById(id)
+                .map(order -> OrderDto.builder()
+                        .id(order.getId())
+                        .paymentMethod(order.getPaymentMethod())
+                        .deliveryAddress(order.getDeliveryAddress())
+                        .status(order.getStatus())
+                        .orderItems(order.getOrderItems().stream().map(orderItem -> OrderItemDto.builder()
+                                .itemId(orderItem.getItem().getId())
+                                .quantity(orderItem.getQuantity())
+                                .name(orderItem.getItem().getName())
+                                .description(orderItem.getItem().getDescription())
+                                .build()).collect(Collectors.toList()))
+                        .build())
                 .orElseThrow(() -> new FetchNotFoundException(Order.class.getSimpleName(), id.toString()));
     }
 
-    public Order createOrder(OrderDto orderDto, String username) {
+    public OrderDto createOrder(OrderDto orderDto, String username) {
         List<OrderItemDto> orderItems = orderDto.getOrderItems();
         Address deliveryAddress = orderDto.getDeliveryAddress();
 
@@ -74,7 +103,20 @@ public class OrderService {
         order.setOrderItems(orderItemList);
 
         // Save the Order entity and associated OrderItems
-        return orderRepository.save(order);
+        orderRepository.save(order);
+
+        return OrderDto.builder()
+                .id(order.getId())
+                .paymentMethod(order.getPaymentMethod())
+                .deliveryAddress(order.getDeliveryAddress())
+                .status(order.getStatus())
+                .orderItems(order.getOrderItems().stream().map(orderItem -> OrderItemDto.builder()
+                        .itemId(orderItem.getItem().getId())
+                        .quantity(orderItem.getQuantity())
+                        .name(orderItem.getItem().getName())
+                        .description(orderItem.getItem().getDescription())
+                        .build()).collect(Collectors.toList()))
+                .build();
     }
 
     public void updateOrderStatus(String username, String status) {
@@ -88,15 +130,19 @@ public class OrderService {
     }
 
     public void updateOrderStatus(Long id, String status) {
-        Order order = getOrderById(id);
-        order.setStatus(status);
-        orderRepository.save(order);
+        orderRepository.findById(id)
+                .ifPresent(order -> {
+                    order.setStatus(status);
+                    orderRepository.save(order);
+                });
     }
 
+    @Transactional
     public void deleteOrder(String username, Long id) {
         orderRepository.deleteByIdAndUserEmail(id, username);
     }
 
+    @Transactional
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
     }

@@ -17,20 +17,21 @@ CREATE TABLE IF NOT EXISTS items (
 CREATE TABLE IF NOT EXISTS orders (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   user_id BIGINT NOT NULL,
-  delivery_address_line1 VARCHAR(255) NOT NULL,
-  delivery_address_line2 VARCHAR(255),
-  delivery_city VARCHAR(255) NOT NULL,
-  delivery_state VARCHAR(255) NOT NULL,
-  delivery_zip VARCHAR(10) NOT NULL,
+  street VARCHAR(255) NOT NULL,
+  city VARCHAR(255) NOT NULL,
+  state VARCHAR(255) NOT NULL,
+  postal_code VARCHAR(10) NOT NULL,
+  country VARCHAR(255),
   payment_method VARCHAR(255) NOT NULL,
   status VARCHAR(20) NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
 CREATE TABLE IF NOT EXISTS order_items (
+  id BIGSERIAL PRIMARY KEY,
   order_id BIGINT NOT NULL,
   item_id BIGINT NOT NULL,
-  PRIMARY KEY (order_id, item_id),
+  quantity BIGINT NOT NULL,
   FOREIGN KEY (order_id) REFERENCES orders (id),
   FOREIGN KEY (item_id) REFERENCES items (id)
 );

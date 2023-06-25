@@ -1,5 +1,6 @@
 package com.alamu817group4.inventorypro.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

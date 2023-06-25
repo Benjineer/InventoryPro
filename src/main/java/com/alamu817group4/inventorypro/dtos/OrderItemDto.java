@@ -14,6 +14,10 @@ public class OrderItemDto {
     @NotNull(message = "itemId is required")
     private Long itemId;
 
+    private String name;
+
+    private String description;
+
     @NotNull(message = "quantity is required")
     private int quantity;
 }

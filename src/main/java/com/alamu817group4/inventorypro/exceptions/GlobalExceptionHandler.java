@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.FetchNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -89,6 +91,24 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseObject<Object>> errorHandler(UsernameNotFoundException e) {
         log.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseObject.builder()
+                .status(ResponseObject.ResponseStatus.FAILED)
+                .message(e.getMessage())
+                .build());
+    }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<ResponseObject<Object>> errorHandler(AccessDeniedException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseObject.builder()
+                .status(ResponseObject.ResponseStatus.FAILED)
+                .message(e.getMessage())
+                .build());
+    }
+
+    @ExceptionHandler({BadCredentialsException.class})
+    public ResponseEntity<ResponseObject<Object>> errorHandler(BadCredentialsException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ResponseObject.builder()
                 .status(ResponseObject.ResponseStatus.FAILED)
                 .message(e.getMessage())
                 .build());
